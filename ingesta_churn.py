@@ -58,7 +58,9 @@ def carga_datos(
         destination=destination,
         dataset_name=dataset_name,
         pipelines_dir=pipelines_dir,
-        dev_mode=dev_mode
+        dev_mode=dev_mode,
+        import_schema_path="schemas/import",
+        export_schema_path="schemas/export"
     )
     
     # Crear una conexión a la base de datos origen

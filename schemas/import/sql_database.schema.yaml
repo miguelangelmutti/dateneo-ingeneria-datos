@@ -1,0 +1,346 @@
+version: 3
+version_hash: 9PyrPyJHaJxhKSne/thMO1pHsWIZCSVy6lGcYm1OPQM=
+engine_version: 11
+name: sql_database
+tables:
+  _dlt_version:
+    columns:
+      version:
+        data_type: bigint
+        nullable: false
+      engine_version:
+        data_type: bigint
+        nullable: false
+      inserted_at:
+        data_type: timestamp
+        nullable: false
+      schema_name:
+        data_type: text
+        nullable: false
+      version_hash:
+        data_type: text
+        nullable: false
+      schema:
+        data_type: text
+        nullable: false
+    write_disposition: skip
+    resource: _dlt_version
+    description: Created by DLT. Tracks schema updates
+  _dlt_loads:
+    columns:
+      load_id:
+        data_type: text
+        nullable: false
+      schema_name:
+        data_type: text
+        nullable: true
+      status:
+        data_type: bigint
+        nullable: false
+      inserted_at:
+        data_type: timestamp
+        nullable: false
+      schema_version_hash:
+        data_type: text
+        nullable: true
+    write_disposition: skip
+    resource: _dlt_loads
+    description: Created by DLT. Tracks completed loads
+  accounts:
+    columns:
+      account_id:
+        nullable: false
+        data_type: bigint
+        primary_key: true
+      account_name:
+        nullable: false
+        data_type: text
+      email:
+        nullable: true
+        data_type: text
+      created_at:
+        nullable: false
+        data_type: timestamp
+      updated_at:
+        nullable: false
+        data_type: timestamp
+      _dlt_load_id:
+        data_type: text
+        nullable: false
+      _dlt_id:
+        data_type: text
+        nullable: false
+        unique: true
+        row_key: true
+    write_disposition: replace
+    resource: accounts
+  accounts_subscription:
+    columns:
+      account_subscription_id:
+        nullable: false
+        data_type: bigint
+        primary_key: true
+      account_id:
+        nullable: false
+        data_type: bigint
+      subscription_id:
+        nullable: false
+        data_type: bigint
+      start_date:
+        nullable: true
+        data_type: date
+      end_date:
+        nullable: true
+        data_type: date
+      _dlt_load_id:
+        data_type: text
+        nullable: false
+      _dlt_id:
+        data_type: text
+        nullable: false
+        unique: true
+        row_key: true
+    write_disposition: replace
+    resource: accounts_subscription
+  subscriptions:
+    columns:
+      subscription_id:
+        nullable: false
+        data_type: bigint
+        primary_key: true
+      subscription_name:
+        nullable: true
+        data_type: text
+      max_contents_per_month:
+        nullable: true
+        data_type: bigint
+      created_at:
+        nullable: false
+        data_type: timestamp
+      updated_at:
+        nullable: false
+        data_type: timestamp
+      _dlt_load_id:
+        data_type: text
+        nullable: false
+      _dlt_id:
+        data_type: text
+        nullable: false
+        unique: true
+        row_key: true
+    write_disposition: replace
+    resource: subscriptions
+  contents:
+    columns:
+      content_id:
+        nullable: false
+        data_type: bigint
+        primary_key: true
+      account_id:
+        nullable: true
+        data_type: bigint
+      title:
+        nullable: true
+        data_type: text
+      description:
+        nullable: true
+        data_type: text
+      content_type:
+        nullable: true
+        data_type: text
+      created_at:
+        nullable: false
+        data_type: timestamp
+      updated_at:
+        nullable: false
+        data_type: timestamp
+        incremental: true
+    table_format: iceberg
+    write_disposition: merge
+    resource: contents
+  content_attributes:
+    columns:
+      attribute_id:
+        nullable: false
+        data_type: bigint
+        primary_key: true
+      content_id:
+        nullable: false
+        data_type: bigint
+      attribute_name:
+        nullable: true
+        data_type: text
+      string_value:
+        nullable: true
+        data_type: text
+      decimal_value:
+        nullable: true
+        data_type: decimal
+      date_value:
+        nullable: true
+        data_type: date
+      created_at:
+        nullable: false
+        data_type: timestamp
+      updated_at:
+        nullable: false
+        data_type: timestamp
+        incremental: true
+    table_format: iceberg
+    write_disposition: merge
+    resource: content_attributes
+  premium_features:
+    columns:
+      feature_id:
+        nullable: false
+        data_type: bigint
+        primary_key: true
+      feature_name:
+        nullable: true
+        data_type: text
+      description:
+        nullable: true
+        data_type: text
+      base_price:
+        nullable: true
+        data_type: decimal
+        precision: 10
+        scale: 2
+      created_at:
+        nullable: false
+        data_type: timestamp
+      updated_at:
+        nullable: false
+        data_type: timestamp
+        incremental: true
+    table_format: iceberg
+    write_disposition: merge
+    resource: premium_features
+  account_premium_features:
+    columns:
+      account_feature_id:
+        nullable: false
+        data_type: bigint
+        primary_key: true
+      account_id:
+        nullable: false
+        data_type: bigint
+      feature_id:
+        nullable: false
+        data_type: bigint
+      purchase_date:
+        nullable: true
+        data_type: timestamp
+        incremental: true
+      amount_paid:
+        nullable: true
+        data_type: decimal
+        precision: 10
+        scale: 2
+    table_format: iceberg
+    write_disposition: merge
+    resource: account_premium_features
+  subscription_payments:
+    columns:
+      payment_id:
+        nullable: false
+        data_type: bigint
+        primary_key: true
+      account_subscription_id:
+        nullable: false
+        data_type: bigint
+      payment_date:
+        nullable: true
+        data_type: timestamp
+        incremental: true
+      amount:
+        nullable: true
+        data_type: decimal
+        precision: 10
+        scale: 2
+      payment_method:
+        nullable: true
+        data_type: text
+      billing_cycle:
+        nullable: true
+        data_type: text
+    table_format: iceberg
+    write_disposition: merge
+    resource: subscription_payments
+  _dlt_pipeline_state:
+    columns:
+      version:
+        data_type: bigint
+        nullable: false
+      engine_version:
+        data_type: bigint
+        nullable: false
+      pipeline_name:
+        data_type: text
+        nullable: false
+      state:
+        data_type: text
+        nullable: false
+      created_at:
+        data_type: timestamp
+        nullable: false
+      version_hash:
+        data_type: text
+        nullable: true
+      _dlt_load_id:
+        data_type: text
+        nullable: false
+      _dlt_id:
+        data_type: text
+        nullable: false
+        unique: true
+        row_key: true
+    write_disposition: append
+    file_format: preferred
+    resource: _dlt_pipeline_state
+settings:
+  detections:
+  - iso_timestamp
+  default_hints:
+    not_null:
+    - _dlt_id
+    - _dlt_root_id
+    - _dlt_parent_id
+    - _dlt_list_idx
+    - _dlt_load_id
+    parent_key:
+    - _dlt_parent_id
+    root_key:
+    - _dlt_root_id
+    unique:
+    - _dlt_id
+    row_key:
+    - _dlt_id
+normalizers:
+  names: snake_case
+  json:
+    module: dlt.common.normalizers.json.relational
+    config:
+      propagation:
+        tables:
+          contents:
+            _dlt_id: _dlt_root_id
+          content_attributes:
+            _dlt_id: _dlt_root_id
+          premium_features:
+            _dlt_id: _dlt_root_id
+          account_premium_features:
+            _dlt_id: _dlt_root_id
+          subscription_payments:
+            _dlt_id: _dlt_root_id
+previous_hashes:
+- VBZ91aRth408KiOlRePhmP2B1jozuJd3zOyKWI5O/lQ=
+- EfU7HT8jotyDrkgWKgOQS1OeTXoTFL+UreLGt/st8Lc=
+- MoaT2IzvfWhDC32dtCNu3NYXoEX1S6sjHZu1BrJz68w=
+- xsHWyUzGGyMLL56RqxmdFwJKvzlKSe67Hj1vMdFef6E=
+- nNx7SGCUZlMnQjCx3z0B4HgXiMBbRu9MVrQ+HKZTcRo=
+- Gp8Our8bPmdXPde0dyjTBp2FU8H/oUSnjQ/snADhLcY=
+- HMIiBJzb3PvwRTifNDjDBMIyezGOW63Njiy2p/034oE=
+- A4n1tO6rTY+yX0q3BxDtawjPk6BzjrGJfQXtg2dW480=
+- O/tr5PwAatAcmDT1dkXr6GNbLpqiOVLJ28QfFzp5QXo=
+- XdT6ArOPbBhfrAHBCFe9IFnvdSvEK2V9c6UKNmhGsRo=
