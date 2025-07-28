@@ -450,7 +450,11 @@ def validar_integridad_referencial_tablas(
                 try:
                     # Query para detectar registros huérfanos
                     query = f"""
-                    -- COMPLETAR AQUÍ: query para encontrar registros huérfanos
+                    SELECT COUNT(*)
+                    FROM {dataset_name}.{table} AS t
+                    LEFT JOIN {dataset_name}.{parent_table} AS p
+                    ON t.{fk_column} = p.{fk_column}
+                    WHERE p.{fk_column} IS NULL                    
                     """
                     
                     result = execute_destination_query(env, dest_conn, query)
@@ -584,3 +588,10 @@ if __name__ == "__main__":
         tables=['contents', 'content_attributes', 'accounts_subscription']
     )
     mostrar_resumen_duplicados(validacion_duplicados)
+
+    validacion_referencial = validar_integridad_referencial_tablas(env='dev',tables=['contents', 'content_attributes', 'accounts_subscription'])
+    mostrar_resumen_integridad_referencial(validacion_referencial)
+
+    validacion_frescura = validar_freshness_tablas(env='dev', tables=['contents', 'content_attributes', 'accounts_subscription'])
+    mostrar_resumen_freshness(validacion_frescura)
+    
